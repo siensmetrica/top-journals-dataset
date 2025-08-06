@@ -46,7 +46,7 @@ def main(args: argparse.Namespace):
         with zipfile.ZipFile(args.input) as zf:
             rows = extract_rows(zf)
 
-        frame = pl.from_dicts(rows, schema=reader.tables.top_journals.pl_schema).lazy()
+        frame = pl.from_dicts(rows).lazy()
         frame = (
             frame.join(
                 (
