@@ -1,6 +1,6 @@
 # /// script
-# requires-python = ">=3.12"
-# dependencies = ['polars', 'pmed-tools@git+ssh://git@github.com/siensmetrica/pmed-tools@abfa01fdc711743984f0376f72d83beba0f264f6']
+# requires-python = ">=3.13"
+# dependencies = ['polars', 'pmed-tools@git+ssh://git@github.com/siensmetrica/pmed-tools@009a761afb076920029aaf28903df544fc9b724e']
 # ///
 
 import json
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import polars as pl
 
-from pmed_tools.dataset.reader import open_dataset_reader
+from pmed_tools.dataset import open_dataset_reader
 
 
 def extract_rows(zf: zipfile.ZipFile) -> list[dict]:
@@ -51,8 +51,10 @@ def main(args: argparse.Namespace):
             frame.join(
                 (
                     reader
+                    .ctx
                     .journals
-                    .select(['issn', 'title'])
+                    .scan()
+                    .select(['iso_abv', 'issn', 'title'])
                     .unique(keep='last')
                 ),
                 on='title',
